@@ -1,28 +1,19 @@
-//  network.dart
-//
-//  This file is a part of the dart_envirofacts project.
-//
-//  dart_envirofacts is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This porogram is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//
-///  Created by Joe Diragi on 3/19/19.
-///  Copyright © 2019 Joe Diragi. All rights reserved.
 import 'dart:core';
+
+import 'package:http/http.dart' as http;
+
+import 'request_filter.dart';
 
 /// Simplifies API calls to the envirofacts site
 class Network {
   /// The base API url
-  static String baseUrl = "https://iaspub.epa.gov/enviro/efservice";
+  String baseUrl = "https://iaspub.epa.gov/enviro/efservice";
+
+  /// Creates a [Network] instance with the provided [endpoint] and optional
+  /// [RequestFilter].
+  Network(String endpoint, RequestFilter filter) {
+    // TBI
+  }
 
   /// Makes a url for certain endpoints and values. 
   /// 
@@ -37,7 +28,7 @@ class Network {
   /// be in `XML` format by default, but can be any of: {XML, CSV, EXCEL, JSON}.
   /// If it is provided, [count] will make the response contain only the amount 
   /// of results that would be returned if the query were to be made.
-  static String makeUrl(String endpoint, {String columnName, 
+  String makeUrl(String endpoint, {String columnName, 
       String filterOperator, String filterValue, List rowsToShow, String format,
       bool count}) {
     var appropriateFormats = ["xml", "json", "csv", "excel"];
@@ -70,5 +61,10 @@ class Network {
     return url;
   }
 
-  
+  /// Returns the response from the provided [endpoint]
+  Future<String> getData(String endpoint) async {
+    var response = await http.get(endpoint);
+    var body =response.body;
+    return body;
+  }
 }
