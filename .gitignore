@@ -37,3 +37,4 @@ doc/api/
 .history
 
 # End of https://www.gitignore.io/api/dart,visualstudiocode
+analysis_options.yaml
