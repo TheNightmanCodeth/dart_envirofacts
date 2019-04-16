@@ -21,7 +21,8 @@ import 'dart:core';
 
 /// Simplifies API calls to the envirofacts site
 class Network {
-  static String URL = "https://iaspub.epa.gov/enviro/efservice";
+  /// The base API url
+  static String baseUrl = "https://iaspub.epa.gov/enviro/efservice";
 
   /// Makes a url for certain endpoints and values. 
   /// 
@@ -31,30 +32,37 @@ class Network {
   /// a single column is required OR a filter is needed. It can be a string, or 
   /// a list of strings. The [filterOperator] is one of 
   /// {=, !=, <, >, BEGINNING, CONTAINING}, and compares the [columnName] to the
-  /// [filterValue]. The url returns either the first 10,000 results, or the rows 
-  /// between the two integers provided by [rowsToShow]. The response will be in
-  /// `XML` format by default, but can be any of: {XML, CSV, EXCEL, JSON}. If
-  /// it is provided, [count] will make the response contain only the amount of 
-  /// results that would be returned if the query were to be made.
-  static make_url(var endpoint, {var columnName, var filterOperator, 
-                  var filterValue, var rowsToShow, var format, bool count}) {
+  /// [filterValue]. The url returns either the first 10,000 results, or the 
+  /// rows between the two integers provided by [rowsToShow]. The response will
+  /// be in `XML` format by default, but can be any of: {XML, CSV, EXCEL, JSON}.
+  /// If it is provided, [count] will make the response contain only the amount 
+  /// of results that would be returned if the query were to be made.
+  static String makeUrl(String endpoint, {String columnName, 
+      String filterOperator, String filterValue, List rowsToShow, String format,
+      bool count}) {
     var appropriateFormats = ["xml", "json", "csv", "excel"];
-    var url = "$URL/$endpoint/";
+    var url = "$baseUrl/$endpoint/";
     if (columnName != null) {
-      if (filterOperator == null || filterValue == null)
-        throw new ArgumentError("columnName provided with no filter or value");
+      if (filterOperator == null || filterValue == null) {
+        throw ArgumentError("columnName provided with no filter or value");
+      }
       url += "$columnName/$filterOperator/$filterValue/";
-    } else if (filterOperator != null || filterValue != null)
-        throw new ArgumentError("filter provided with no column name");
+    } else if (filterOperator != null || filterValue != null) {
+        throw ArgumentError("filter provided with no column name");
+    }
     if (rowsToShow != null) {
       if (rowsToShow is List && rowsToShow.length == 2) {
         url += "${rowsToShow[0]}:${rowsToShow[1]}/";
-      } else throw new ArgumentError("rowsToShow must be a list of length 2");
+      } else {
+        throw ArgumentError("rowsToShow must be a list of length 2");
+      }
     }
     if (format != null) {
       if (appropriateFormats.contains(format.toString().toLowerCase())) {
         url += "$format/";
-      } else throw ArgumentError("$format is not a valid format");
+      } else {
+        throw ArgumentError("$format is not a valid format");
+      }
     }
     if (count != null && count) {
       url += "COUNT/";
