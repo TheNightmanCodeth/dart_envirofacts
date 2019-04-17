@@ -19,4 +19,5 @@ library dart_envirofacts;
 //
 ///  Created by Joe Diragi on 3/19/19.
 ///  Copyright © 2019 Joe Diragi. All rights reserved.
-export 'src/handlers/network.dart';
+export 'src/handlers/envirofacts_api.dart';
+export 'src/sems.dart';
